@@ -29,3 +29,16 @@ def read_resume(filename="resume.txt"):
         )
 
     return cleaned_text
+
+if __name__ == "__main__":
+    try:
+        resume = read_resume()
+
+        print("Resume successfully loaded!")
+        print("\n--- Cleaned Resume ---")
+        print(resume)
+
+    except (FileNotFoundError, ValueError) as error:
+        print(error)
+
+
