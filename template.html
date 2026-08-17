@@ -204,6 +204,279 @@
 
     </section>
 
+
+    {% if experience %}
+
+    <section id="experience" class="section">
+
+        <div class="section-content">
+
+            <h2>
+                Experience
+            </h2>
+
+            <div class="experience-list">
+
+                {% for exp in experience %}
+
+                    <div class="experience-item">
+
+                        {% if exp.role %}
+                            <h3>
+                                {{ exp.role }}
+                            </h3>
+                        {% endif %}
+
+                        {% if exp.company %}
+                            <h4>
+                                {{ exp.company }}
+                            </h4>
+                        {% endif %}
+
+                        {% if exp.duration %}
+                            <p>
+                                {{ exp.duration }}
+                            </p>
+                        {% endif %}
+
+                        {% if exp.description %}
+                            <p>
+                                {{ exp.description }}
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    {% if projects %}
+
+    <section id="projects" class="section">
+
+        <div class="section-content">
+
+            <h2>
+                Projects
+            </h2>
+
+            <div class="projects-list">
+
+                {% for project in projects %}
+
+                    <div class="project-card">
+
+                        {% if project.images %}
+
+                            <div class="project-images">
+
+                                {% for image in project.images %}
+
+                                    <img
+                                        src="{{ image }}"
+                                        alt="{{ project.title }}"
+                                        class="project-image"
+                                    >
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        {% if project.title %}
+
+                            <h3>
+                                {{ project.title }}
+                            </h3>
+
+                        {% endif %}
+
+
+                        {% if project.description %}
+
+                            <p>
+                                {{ project.description }}
+                            </p>
+
+                        {% endif %}
+
+
+                        {% if project.technologies %}
+
+                            <div class="project-technologies">
+
+                                {% for technology in project.technologies %}
+
+                                    <span>
+                                        {{ technology }}
+                                    </span>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        {% if project.link %}
+
+                            <a
+                                href="{{ project.link }}"
+                                target="_blank"
+                            >
+                                View Project
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    {% if achievements %}
+
+    <section id="achievements" class="section">
+
+        <div class="section-content">
+
+            <h2>
+                Achievements
+            </h2>
+
+            <div class="achievements-list">
+
+                {% for achievement in achievements %}
+
+                    <div class="achievement-item">
+
+                        {% if achievement.title %}
+
+                            <h3>
+                                {{ achievement.title }}
+                            </h3>
+
+                        {% endif %}
+
+
+                        {% if achievement.description %}
+
+                            <p>
+                                {{ achievement.description }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <section id="contact" class="section">
+
+        <div class="section-content">
+
+            <h2>
+                Contact
+            </h2>
+
+            <div class="contact-info">
+
+                {% if contact.email %}
+
+                    <p>
+                        Email:
+
+                        <a href="mailto:{{ contact.email }}">
+                            {{ contact.email }}
+                        </a>
+                    </p>
+
+                {% endif %}
+
+
+                {% if contact.phone %}
+
+                    <p>
+                        Phone:
+                        {{ contact.phone }}
+                    </p>
+
+                {% endif %}
+
+
+                {% if contact.linkedin %}
+
+                    <p>
+                        LinkedIn:
+
+                        <a
+                            href="{{ contact.linkedin }}"
+                            target="_blank"
+                        >
+                            LinkedIn Profile
+                        </a>
+                    </p>
+
+                {% endif %}
+
+
+                {% if contact.github %}
+
+                    <p>
+                        GitHub:
+
+                        <a
+                            href="{{ contact.github }}"
+                            target="_blank"
+                        >
+                            GitHub Profile
+                        </a>
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+
+        <p>
+            © {{ name }}. All rights reserved.
+        </p>
+
+    </footer>
+
 </body>
 
 </html>
