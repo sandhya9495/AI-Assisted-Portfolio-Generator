@@ -2,10 +2,7 @@ import json
 
 
 def parse_gemini_response(response):
-    """
-    Convert Gemini's JSON response into a Python dictionary.
-    """
-
+    
     try:
         data = json.loads(response)
 
@@ -69,19 +66,6 @@ def normalize_data(data):
 
 
 def process_gemini_response(response):
-    """
-    Complete JSON processing pipeline.
-
-    Gemini response
-          ↓
-    JSON parsing
-          ↓
-    Validation
-          ↓
-    Normalization
-          ↓
-    Clean portfolio data
-    """
 
     data = parse_gemini_response(response)
 
