@@ -1,17 +1,35 @@
-import json
+from pathlib import Path
 from jinja2 import Template
 
-with open("portfolio.json","r",encoding="utf-8") as file:
-    data = json.load(file)
 
-with open("template.html","r",encoding="utf-8") as file:
-    template_content = file.read()
+BASE_DIR = Path(__file__).parent
 
-template = Template(template_content)
 
-html = template.render(**data)
+def generate_portfolio(portfolio_data, profile_path):
 
-with open("portfolio.html","w",encoding="utf-8") as file:
-    file.write(html)
+    template_file = BASE_DIR / "template.html"
+    output_file = BASE_DIR / "portfolio.html"
 
-print("portfolio generated successfully")
+    with open(
+        template_file,
+        "r",
+        encoding="utf-8"
+    ) as file:
+        template_content = file.read()
+
+    template = Template(template_content)
+
+    portfolio_data["image"] = "profile.jpg"
+
+    html = template.render(
+        **portfolio_data
+    )
+
+    with open(
+        output_file,
+        "w",
+        encoding="utf-8"
+    ) as file:
+        file.write(html)
+
+    return str(output_file)
