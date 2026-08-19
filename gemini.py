@@ -11,16 +11,12 @@ load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 
 if not api_key:
-    raise RuntimeError(
-        "GEMINI_API_KEY is not configured in the .env file."
-    )
-
+    raise RuntimeError("GEMINI_API_KEY is not configured in the .env file.")
 
 
 client = genai.Client(api_key=api_key)
 
 MODEL_NAME = "gemini-3.1-flash-lite"
-
 
 
 RESUME_SCHEMA = {
@@ -29,31 +25,21 @@ RESUME_SCHEMA = {
         "name": {
             "type": "string"
         },
-
-        "email": {
+        "headline": {
             "type": "string"
         },
-
-        "phone": {
-            "type": "string"
-        },
-
-        "location": {
-            "type": "string"
-        },
-
-        "linkedin": {
-            "type": "string"
-        },
-
-        "github": {
-            "type": "string"
-        },
-
         "summary": {
             "type": "string"
         },
-
+        "image": {
+            "type": "string"
+        },
+        "skills": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
         "education": {
             "type": "array",
             "items": {
@@ -68,7 +54,7 @@ RESUME_SCHEMA = {
                     "year": {
                         "type": "string"
                     },
-                    "grade": {
+                    "details": {
                         "type": "string"
                     }
                 },
@@ -76,17 +62,16 @@ RESUME_SCHEMA = {
                     "degree",
                     "institution",
                     "year",
-                    "grade"
+                    "details"
                 ]
             }
         },
-
         "experience": {
             "type": "array",
             "items": {
                 "type": "object",
                 "properties": {
-                    "job_title": {
+                    "role": {
                         "type": "string"
                     },
                     "company": {
@@ -100,27 +85,19 @@ RESUME_SCHEMA = {
                     }
                 },
                 "required": [
-                    "job_title",
+                    "role",
                     "company",
                     "duration",
                     "description"
                 ]
             }
         },
-
-        "skills": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-
         "projects": {
             "type": "array",
             "items": {
                 "type": "object",
                 "properties": {
-                    "name": {
+                    "title": {
                         "type": "string"
                     },
                     "description": {
@@ -134,94 +111,103 @@ RESUME_SCHEMA = {
                     },
                     "link": {
                         "type": "string"
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "required": [
-                    "name",
+                    "title",
                     "description",
                     "technologies",
-                    "link"
+                    "link",
+                    "images"
                 ]
             }
         },
-
-        "certifications": {
+        "achievements": {
             "type": "array",
             "items": {
                 "type": "object",
                 "properties": {
-                    "name": {
+                    "title": {
                         "type": "string"
                     },
-                    "issuer": {
-                        "type": "string"
-                    },
-                    "year": {
+                    "description": {
                         "type": "string"
                     }
                 },
                 "required": [
-                    "name",
-                    "issuer",
-                    "year"
+                    "title",
+                    "description"
                 ]
             }
         },
-
-        "achievements": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
+        "contact": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "linkedin": {
+                    "type": "string"
+                },
+                "github": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "email",
+                "phone",
+                "linkedin",
+                "github"
+            ]
         }
     },
-
     "required": [
         "name",
-        "email",
-        "phone",
-        "location",
-        "linkedin",
-        "github",
+        "headline",
         "summary",
+        "image",
+        "skills",
         "education",
         "experience",
-        "skills",
         "projects",
-        "certifications",
-        "achievements"
+        "achievements",
+        "contact"
     ]
 }
 
 
-
 SYSTEM_PROMPT = """
-You are a resume information extraction assistant.
+You are an AI-assisted resume portfolio generator.
 
-Your task is to extract information from the provided resume text
-and return it in the exact JSON structure requested.
+Extract information from the provided resume and return it
+using exactly the JSON structure provided.
 
-IMPORTANT RULES:
+Rules:
 
-1. Use ONLY information present in the resume.
-2. NEVER invent, assume, or hallucinate information.
-3. Do not add skills, projects, companies, degrees, dates,
-   certifications or achievements that are not present.
-4. Preserve the meaning of the original resume.
-5. If a simple text field is missing, return an empty string.
-6. If an array section is missing, return an empty array.
-7. Return ONLY valid JSON.
-8. Do not add Markdown.
-9. Do not add ```json.
-10. Do not add explanations before or after the JSON.
-11. Keep the output compatible with the provided JSON schema.
+1. Use only information present in the resume.
+2. Never invent or assume information.
+3. Do not create fake skills, experience, projects,
+   companies, dates, achievements or links.
+4. If information is missing, use an empty string.
+5. If a list section is missing, use an empty array.
+6. Keep the summary short and factual.
+7. Return only valid JSON.
+8. Do not return Markdown.
+9. Do not add explanations.
+10. Keep all field names exactly as provided.
 """
 
 
 def generate_resume_json(resume_text):
-    """
-    Takes raw resume text and converts it into structured JSON.
-    """
 
     if not isinstance(resume_text, str):
         raise TypeError("resume_text must be a string.")
@@ -242,9 +228,7 @@ RESUME TEXT:
 Extract the resume information now.
 """
 
-
     try:
-
         response = client.models.generate_content(
             model=MODEL_NAME,
             contents=prompt,
@@ -256,36 +240,20 @@ Extract the resume information now.
         )
 
         if not response.text:
-            raise RuntimeError(
-                "Gemini returned an empty response."
-            )
+            raise RuntimeError("Gemini returned an empty response.")
 
-
-        resume_data = json.loads(response.text)
-
-        return resume_data
-
+        return json.loads(response.text)
 
     except json.JSONDecodeError as error:
-
-        raise RuntimeError(
-            "Gemini returned invalid JSON."
-        ) from error
-
+        raise RuntimeError("Gemini returned invalid JSON.") from error
 
     except Exception as error:
-
         raise RuntimeError(
             f"Gemini API request failed: {error}"
         ) from error
 
 
-
 def resume_to_json_string(resume_text):
-    """
-    Returns formatted JSON string.
-    Useful when another module needs JSON text.
-    """
 
     resume_data = generate_resume_json(resume_text)
 
@@ -296,8 +264,11 @@ def resume_to_json_string(resume_text):
     )
 
 
-
 if __name__ == "__main__":
+
     print("Gemini Resume Parser is ready.")
-    print("Use generate_resume_json(resume_text) to convert resume text into structured JSON.")
+    print(
+        "Use generate_resume_json(resume_text) "
+        "to convert resume text into structured JSON."
+    )
     
