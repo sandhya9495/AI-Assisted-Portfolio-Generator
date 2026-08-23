@@ -26,6 +26,7 @@ An AI-powered web application that automatically generates a professional person
 
 ## 📂 Project Structure
 
+```text
 AI-Assisted-Portfolio-Generator/
 │
 ├── app.py
