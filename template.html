@@ -34,6 +34,7 @@
         </div>
     </nav>
 
+
     <section class="hero" id="about">
 
         <div class="hero-content">
@@ -51,14 +52,19 @@
             {% endif %}
 
             <div class="hero-buttons">
+
+                {% if projects %}
                 <a href="#projects" class="primary-button">
                     View My Projects
                 </a>
+                {% endif %}
 
                 <a href="#contact" class="secondary-button">
                     Contact Me
                 </a>
+
             </div>
+
 
             <div class="hero-social">
 
@@ -70,6 +76,7 @@
                 </a>
                 {% endif %}
 
+
                 {% if contact.github %}
                 <a href="{{ contact.github }}" target="_blank" title="GitHub">
                     <svg viewBox="0 0 24 24">
@@ -77,6 +84,7 @@
                     </svg>
                 </a>
                 {% endif %}
+
 
                 {% if contact.email %}
                 <a href="mailto:{{ contact.email }}" title="Email">
@@ -90,13 +98,24 @@
 
         </div>
 
+
+        {% if profile_image %}
         <div class="hero-image">
+
             <div class="image-container">
-                <img src="./profile.jpg" alt="Profile Photo">
+
+                <img
+                    src="./profile.jpg"
+                    alt="Profile Photo"
+                >
+
             </div>
+
         </div>
+        {% endif %}
 
     </section>
+
 
     <section class="section" id="skills">
 
@@ -107,12 +126,15 @@
                 <h2>Technologies & Tools</h2>
             </div>
 
+
             <div class="skills-list">
 
                 {% for skill in skills %}
+
                 <div class="skill">
                     {{ skill }}
                 </div>
+
                 {% endfor %}
 
             </div>
@@ -120,6 +142,7 @@
         </div>
 
     </section>
+
 
     <section class="section" id="education">
 
@@ -129,6 +152,7 @@
                 <span>EDUCATION</span>
                 <h2>Academic Background</h2>
             </div>
+
 
             <div class="education-list">
 
@@ -140,6 +164,7 @@
                         🎓
                     </div>
 
+
                     <div class="education-details">
 
                         {% if item.degree %}
@@ -147,15 +172,21 @@
                         {% endif %}
 
                         {% if item.institution %}
-                        <p class="institution">{{ item.institution }}</p>
+                        <p class="institution">
+                            {{ item.institution }}
+                        </p>
                         {% endif %}
 
                         {% if item.year %}
-                        <p class="year">{{ item.year }}</p>
+                        <p class="year">
+                            {{ item.year }}
+                        </p>
                         {% endif %}
 
                         {% if item.grade %}
-                        <span class="grade">{{ item.grade }}</span>
+                        <span class="grade">
+                            {{ item.grade }}
+                        </span>
                         {% endif %}
 
                     </div>
@@ -169,6 +200,7 @@
         </div>
 
     </section>
+
 
     {% if experience %}
 
@@ -181,6 +213,7 @@
                 <h2>Professional Experience</h2>
             </div>
 
+
             <div class="experience-list">
 
                 {% for item in experience %}
@@ -190,6 +223,7 @@
                     <div class="experience-icon">
                         💼
                     </div>
+
 
                     <div class="experience-details">
 
@@ -202,7 +236,9 @@
                         {% endif %}
 
                         {% if item.duration %}
-                        <p class="duration">{{ item.duration }}</p>
+                        <p class="duration">
+                            {{ item.duration }}
+                        </p>
                         {% endif %}
 
                         {% if item.description %}
@@ -225,6 +261,7 @@
 
     {% endif %}
 
+
     {% if projects %}
 
     <section class="section projects-section" id="projects">
@@ -236,6 +273,7 @@
                 <h2>Featured Projects</h2>
             </div>
 
+
             <div class="projects-slider">
 
                 <button
@@ -246,37 +284,60 @@
                     &#8592;
                 </button>
 
+
                 <div class="projects-wrapper">
 
-                    <div class="projects-list" id="projectsList">
+                    <div
+                        class="projects-list"
+                        id="projectsList">
 
                         {% for project in projects %}
 
                         <div class="project-card">
 
                             {% if project.title %}
-                            <h3>{{ project.title }}</h3>
+
+                            <h3>
+                                {{ project.title }}
+                            </h3>
+
                             {% elif project.name %}
-                            <h3>{{ project.name }}</h3>
+
+                            <h3>
+                                {{ project.name }}
+                            </h3>
+
                             {% endif %}
 
+
                             {% if project.description %}
-                            <p>{{ project.description }}</p>
+
+                            <p>
+                                {{ project.description }}
+                            </p>
+
                             {% endif %}
+
 
                             {% if project.technologies %}
 
                             <div class="project-technologies">
 
                                 {% for technology in project.technologies %}
-                                <span>{{ technology }}</span>
+
+                                <span>
+                                    {{ technology }}
+                                </span>
+
                                 {% endfor %}
 
                             </div>
 
                             {% endif %}
 
+
                             {% if project.github %}
+
                             <a
                                 href="{{ project.github }}"
                                 target="_blank"
@@ -284,7 +345,9 @@
                                 class="project-github">
                                 GitHub →
                             </a>
+
                             {% elif project.github_link %}
+
                             <a
                                 href="{{ project.github_link }}"
                                 target="_blank"
@@ -292,7 +355,9 @@
                                 class="project-github">
                                 GitHub →
                             </a>
+
                             {% elif project.link %}
+
                             <a
                                 href="{{ project.link }}"
                                 target="_blank"
@@ -300,6 +365,7 @@
                                 class="project-github">
                                 GitHub →
                             </a>
+
                             {% endif %}
 
                         </div>
@@ -309,6 +375,7 @@
                     </div>
 
                 </div>
+
 
                 <button
                     type="button"
@@ -320,10 +387,15 @@
 
             </div>
 
+
             <div class="project-dots">
 
                 {% for project in projects %}
-                <span class="project-dot {% if loop.first %}active{% endif %}"></span>
+
+                <span
+                    class="project-dot {% if loop.first %}active{% endif %}">
+                </span>
+
                 {% endfor %}
 
             </div>
@@ -333,6 +405,7 @@
     </section>
 
     {% endif %}
+
 
     {% if achievements %}
 
@@ -345,6 +418,7 @@
                 <h2>What I've Achieved</h2>
             </div>
 
+
             <div class="achievements-list">
 
                 {% for achievement in achievements %}
@@ -355,14 +429,19 @@
                         ★
                     </div>
 
+
                     <div>
 
                         {% if achievement.title %}
-                        <h3>{{ achievement.title }}</h3>
+                        <h3>
+                            {{ achievement.title }}
+                        </h3>
                         {% endif %}
 
                         {% if achievement.description %}
-                        <p>{{ achievement.description }}</p>
+                        <p>
+                            {{ achievement.description }}
+                        </p>
                         {% endif %}
 
                     </div>
@@ -379,6 +458,7 @@
 
     {% endif %}
 
+
     <section class="contact-section" id="contact">
 
         <div class="section-content">
@@ -388,43 +468,67 @@
                 <h2>Let's Connect</h2>
             </div>
 
+
             <div class="contact-grid">
+
 
                 {% if contact.email %}
 
-                <a href="mailto:{{ contact.email }}" class="contact-card">
+                <a
+                    href="mailto:{{ contact.email }}"
+                    class="contact-card">
 
                     <div class="contact-icon email-icon">
                         ✉
                     </div>
 
                     <div>
+
                         <span>Email</span>
-                        <strong>{{ contact.email }}</strong>
-                        <small>Send Email →</small>
+
+                        <strong>
+                            {{ contact.email }}
+                        </strong>
+
+                        <small>
+                            Send Email →
+                        </small>
+
                     </div>
 
                 </a>
 
                 {% endif %}
 
+
                 {% if contact.phone %}
 
-                <a href="tel:{{ contact.phone }}" class="contact-card">
+                <a
+                    href="tel:{{ contact.phone }}"
+                    class="contact-card">
 
                     <div class="contact-icon phone-icon">
                         ☎
                     </div>
 
                     <div>
+
                         <span>Phone</span>
-                        <strong>{{ contact.phone }}</strong>
-                        <small>Call Me →</small>
+
+                        <strong>
+                            {{ contact.phone }}
+                        </strong>
+
+                        <small>
+                            Call Me →
+                        </small>
+
                     </div>
 
                 </a>
 
                 {% endif %}
+
 
                 {% if contact.linkedin %}
 
@@ -438,14 +542,23 @@
                     </div>
 
                     <div>
+
                         <span>LinkedIn</span>
-                        <strong>LinkedIn Profile</strong>
-                        <small>Visit Profile →</small>
+
+                        <strong>
+                            LinkedIn Profile
+                        </strong>
+
+                        <small>
+                            Visit Profile →
+                        </small>
+
                     </div>
 
                 </a>
 
                 {% endif %}
+
 
                 {% if contact.github %}
 
@@ -459,9 +572,17 @@
                     </div>
 
                     <div>
+
                         <span>GitHub</span>
-                        <strong>GitHub Profile</strong>
-                        <small>Visit Profile →</small>
+
+                        <strong>
+                            GitHub Profile
+                        </strong>
+
+                        <small>
+                            Visit Profile →
+                        </small>
+
                     </div>
 
                 </a>
@@ -473,6 +594,7 @@
         </div>
 
     </section>
+
 
     <footer>
 
@@ -494,11 +616,17 @@
 
     </footer>
 
+
     <script>
-        const projectList = document.getElementById("projectsList");
-        const dots = document.querySelectorAll(".project-dot");
+
+        const projectList =
+            document.getElementById("projectsList");
+
+        const dots =
+            document.querySelectorAll(".project-dot");
 
         let currentProject = 0;
+
 
         function updateProjects() {
 
@@ -506,22 +634,30 @@
                 return;
             }
 
-            const cards = projectList.querySelectorAll(".project-card");
+            const cards =
+                projectList.querySelectorAll(".project-card");
 
             if (!cards.length) {
                 return;
             }
 
             projectList.style.transform =
-                "translateX(-" + (currentProject * 100) + "%)";
+                "translateX(-" +
+                (currentProject * 100) +
+                "%)";
+
 
             dots.forEach(function(dot, index) {
+
                 dot.classList.toggle(
                     "active",
                     index === currentProject
                 );
+
             });
+
         }
+
 
         function moveProjects(direction) {
 
@@ -529,26 +665,34 @@
                 return;
             }
 
-            const cards = projectList.querySelectorAll(".project-card");
+            const cards =
+                projectList.querySelectorAll(".project-card");
 
             if (!cards.length) {
                 return;
             }
 
+
             currentProject += direction;
+
 
             if (currentProject < 0) {
                 currentProject = cards.length - 1;
             }
 
+
             if (currentProject >= cards.length) {
                 currentProject = 0;
             }
 
+
             updateProjects();
+
         }
 
+
         updateProjects();
+
     </script>
 
 </body>
