@@ -1,5 +1,9 @@
-import streamlit as st
+import base64
+import mimetypes
+import re
 from pathlib import Path
+
+import streamlit as st
 import streamlit.components.v1 as components
 
 from input_handler import read_uploaded_resume
@@ -9,6 +13,7 @@ from html_generator import generate_portfolio
 
 BASE_DIR = Path(__file__).parent
 PROFILE_FILE = BASE_DIR / "profile.jpg"
+STYLE_FILE = BASE_DIR / "style.css"
 
 
 st.set_page_config(
@@ -202,6 +207,62 @@ st.markdown(
 )
 
 
+def prepare_portfolio_html(html_file):
+    html_path = Path(html_file).resolve()
+
+    with open(html_path, "r", encoding="utf-8") as file:
+        html_content = file.read()
+
+    if STYLE_FILE.exists():
+        with open(STYLE_FILE, "r", encoding="utf-8") as file:
+            css_content = file.read()
+
+        html_content = re.sub(
+            r'<link[^>]+href=["\'][^"\']*style\.css[^"\']*["\'][^>]*>',
+            "",
+            html_content,
+            flags=re.IGNORECASE
+        )
+
+        if "</head>" in html_content.lower():
+            html_content = re.sub(
+                r"</head>",
+                f"<style>\n{css_content}\n</style>\n</head>",
+                html_content,
+                count=1,
+                flags=re.IGNORECASE
+            )
+        else:
+            html_content = f"<style>\n{css_content}\n</style>\n{html_content}"
+
+    if PROFILE_FILE.exists():
+        image_bytes = PROFILE_FILE.read_bytes()
+        image_base64 = base64.b64encode(image_bytes).decode("utf-8")
+
+        mime_type = mimetypes.guess_type(PROFILE_FILE.name)[0]
+
+        if mime_type is None:
+            mime_type = "image/jpeg"
+
+        image_data = f"data:{mime_type};base64,{image_base64}"
+
+        html_content = re.sub(
+            r'(src=["\'])(?:file://[^"\']*/)?profile\.(?:jpg|jpeg|png)(["\'])',
+            rf'\1{image_data}\2',
+            html_content,
+            flags=re.IGNORECASE
+        )
+
+        html_content = re.sub(
+            r'(src=["\'])(?:\./)?profile\.(?:jpg|jpeg|png)(["\'])',
+            rf'\1{image_data}\2',
+            html_content,
+            flags=re.IGNORECASE
+        )
+
+    return html_content
+
+
 st.markdown(
     '<div class="main-title">AI Portfolio Builder</div>',
     unsafe_allow_html=True
@@ -303,6 +364,11 @@ if st.button(
                 with open(PROFILE_FILE, "wb") as file:
                     file.write(image_bytes)
 
+        else:
+
+            if PROFILE_FILE.exists():
+                PROFILE_FILE.unlink()
+
         with st.spinner("🌐 Building your portfolio..."):
 
             generated_file = generate_portfolio(
@@ -312,14 +378,13 @@ if st.button(
 
         generated_path = Path(generated_file).resolve()
 
-        with open(generated_path, "r", encoding="utf-8") as file:
-            html_content = file.read()
+        html_content = prepare_portfolio_html(generated_path)
 
         st.success("🎉 Portfolio generated!")
 
         components.html(
             html_content,
-            height=1200,
+            height=1500,
             scrolling=True
         )
 
