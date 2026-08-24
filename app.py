@@ -1,7 +1,6 @@
 import base64
 import mimetypes
 import re
-import json
 from pathlib import Path
 
 import streamlit as st
@@ -209,14 +208,12 @@ st.markdown(
 
 
 def prepare_portfolio_html(generated_file):
-
     generated_path = Path(generated_file).resolve()
 
     with open(generated_path, "r", encoding="utf-8") as file:
         html_content = file.read()
 
     if STYLE_FILE.exists():
-
         with open(STYLE_FILE, "r", encoding="utf-8") as file:
             css_content = file.read()
 
@@ -236,7 +233,6 @@ def prepare_portfolio_html(generated_file):
         )
 
     if PROFILE_FILE.exists():
-
         image_bytes = PROFILE_FILE.read_bytes()
 
         image_base64 = base64.b64encode(
@@ -272,42 +268,88 @@ def prepare_portfolio_html(generated_file):
 
 
 def redirect_to_portfolio(html_content):
-
     encoded_html = base64.b64encode(
         html_content.encode("utf-8")
     ).decode("utf-8")
 
     script = f"""
+    <html>
+    <body style="
+        margin:0;
+        padding:10px;
+        background:transparent;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    ">
+
+    <button onclick="openPortfolio()" style="
+        width:100%;
+        height:48px;
+        border:none;
+        border-radius:10px;
+        color:white;
+        font-size:16px;
+        font-weight:700;
+        cursor:pointer;
+        background:linear-gradient(
+            90deg,
+            #3b82f6,
+            #8b5cf6,
+            #ec4899
+        );
+        box-shadow:0 8px 25px rgba(139,92,246,0.35);
+    ">
+        🌐 Open My Portfolio
+    </button>
+
     <script>
+    function openPortfolio() {{
+        try {{
+            const encoded = "{encoded_html}";
 
-    const encoded = "{encoded_html}";
+            const binary = atob(encoded);
 
-    const binary = atob(encoded);
+            const bytes = new Uint8Array(
+                binary.length
+            );
 
-    const bytes = new Uint8Array(binary.length);
+            for (
+                let i = 0;
+                i < binary.length;
+                i++
+            ) {{
+                bytes[i] = binary.charCodeAt(i);
+            }}
 
-    for (let i = 0; i < binary.length; i++) {{
-        bytes[i] = binary.charCodeAt(i);
+            const blob = new Blob(
+                [bytes],
+                {{
+                    type: "text/html;charset=utf-8"
+                }}
+            );
+
+            const portfolioURL =
+                URL.createObjectURL(blob);
+
+            window.open(
+                portfolioURL,
+                "_blank"
+            );
+        }}
+        catch (error) {{
+            console.error(error);
+        }}
     }}
-
-    const blob = new Blob(
-        [bytes],
-        {{ type: "text/html;charset=utf-8" }}
-    );
-
-    const portfolioURL = URL.createObjectURL(blob);
-
-    window.open(
-        portfolioURL,
-        "_blank"
-    );
-
     </script>
+
+    </body>
+    </html>
     """
 
     components.html(
         script,
-        height=1,
+        height=70,
         scrolling=False
     )
 
@@ -316,7 +358,6 @@ st.markdown(
     '<div class="main-title">AI Portfolio Builder</div>',
     unsafe_allow_html=True
 )
-
 
 st.markdown(
     '<div class="subtitle">'
@@ -349,9 +390,10 @@ with col1:
     )
 
     if resume_file is not None:
-
         st.markdown(
-            '<div class="selected-text">✓ Resume selected</div>',
+            '<div class="selected-text">'
+            '✓ Resume selected'
+            '</div>',
             unsafe_allow_html=True
         )
 
@@ -376,16 +418,17 @@ with col2:
     )
 
     if profile_image is not None:
-
         st.markdown(
-            '<div class="selected-text">✓ Profile photo selected</div>',
+            '<div class="selected-text">'
+            '✓ Profile photo selected'
+            '</div>',
             unsafe_allow_html=True
         )
-
     else:
-
         st.markdown(
-            '<div class="optional-text">Optional</div>',
+            '<div class="optional-text">'
+            'Optional'
+            '</div>',
             unsafe_allow_html=True
         )
 
@@ -397,33 +440,26 @@ if st.button(
 ):
 
     if resume_file is None:
-
         st.error(
             "Please upload your resume first."
         )
-
         st.stop()
-
 
     try:
 
         with st.spinner(
             "Reading your resume..."
         ):
-
             resume_text = read_uploaded_resume(
                 resume_file
             )
 
-
         with st.spinner(
             "🤖 AI is creating your portfolio..."
         ):
-
             portfolio_data = generate_resume_json(
                 resume_text
             )
-
 
         if profile_image is not None:
 
@@ -437,14 +473,12 @@ if st.button(
                     PROFILE_FILE,
                     "wb"
                 ) as file:
-
                     file.write(image_bytes)
 
         else:
 
             if PROFILE_FILE.exists():
                 PROFILE_FILE.unlink()
-
 
         with st.spinner(
             "🌐 Building your portfolio..."
@@ -457,21 +491,32 @@ if st.button(
                 else None
             )
 
-
         html_content = prepare_portfolio_html(
             generated_file
         )
 
-
         st.success(
-            "🎉 Portfolio generated! Redirecting..."
+            "🎉 Portfolio generated successfully!"
         )
 
+        st.markdown(
+            """
+            <div style="
+                text-align:center;
+                color:#cbd5e1;
+                font-size:14px;
+                margin-top:5px;
+                margin-bottom:5px;
+            ">
+                Your portfolio is ready. Click below to open it.
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
         redirect_to_portfolio(
             html_content
         )
-
 
     except Exception as error:
 
