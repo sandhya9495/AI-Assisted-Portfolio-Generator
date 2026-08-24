@@ -1,7 +1,7 @@
 import base64
-import json
 import mimetypes
 import re
+import json
 from pathlib import Path
 
 import streamlit as st
@@ -229,7 +229,7 @@ def prepare_portfolio_html(generated_file):
 
         html_content = re.sub(
             r"</head>",
-            f"<style>\n{css_content}\n</style>\n</head>",
+            f"<style>{css_content}</style></head>",
             html_content,
             count=1,
             flags=re.IGNORECASE
@@ -238,14 +238,21 @@ def prepare_portfolio_html(generated_file):
     if PROFILE_FILE.exists():
 
         image_bytes = PROFILE_FILE.read_bytes()
-        image_base64 = base64.b64encode(image_bytes).decode("utf-8")
 
-        mime_type = mimetypes.guess_type(PROFILE_FILE.name)[0]
+        image_base64 = base64.b64encode(
+            image_bytes
+        ).decode("utf-8")
+
+        mime_type = mimetypes.guess_type(
+            PROFILE_FILE.name
+        )[0]
 
         if mime_type is None:
             mime_type = "image/jpeg"
 
-        image_data = f"data:{mime_type};base64,{image_base64}"
+        image_data = (
+            f"data:{mime_type};base64,{image_base64}"
+        )
 
         html_content = re.sub(
             r'(src=["\'])(?:file://[^"\']*/)?profile\.(?:jpg|jpeg|png)(["\'])',
@@ -264,69 +271,43 @@ def prepare_portfolio_html(generated_file):
     return html_content
 
 
-def create_portfolio_opener(html_content):
+def redirect_to_portfolio(html_content):
 
-    html_json = json.dumps(html_content)
+    encoded_html = base64.b64encode(
+        html_content.encode("utf-8")
+    ).decode("utf-8")
 
-    opener_html = f"""
-    <div style="
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        width:100%;
-        padding:10px 0;
-    ">
-
-        <button
-            id="openPortfolio"
-            style="
-                width:100%;
-                height:58px;
-                border:none;
-                border-radius:13px;
-                color:white;
-                font-size:17px;
-                font-weight:700;
-                cursor:pointer;
-                background:linear-gradient(
-                    90deg,
-                    #3b82f6,
-                    #8b5cf6,
-                    #ec4899
-                );
-                box-shadow:0 12px 35px rgba(139,92,246,0.35);
-            "
-        >
-            🌐 Open My Portfolio
-        </button>
-
-    </div>
-
+    script = f"""
     <script>
 
-    const portfolioHTML = {html_json};
+    const encoded = "{encoded_html}";
 
-    document
-        .getElementById("openPortfolio")
-        .addEventListener("click", function() {{
+    const binary = atob(encoded);
 
-            const blob = new Blob(
-                [portfolioHTML],
-                {{ type: "text/html;charset=utf-8" }}
-            );
+    const bytes = new Uint8Array(binary.length);
 
-            const url = URL.createObjectURL(blob);
+    for (let i = 0; i < binary.length; i++) {{
+        bytes[i] = binary.charCodeAt(i);
+    }}
 
-            window.open(url, "_blank");
+    const blob = new Blob(
+        [bytes],
+        {{ type: "text/html;charset=utf-8" }}
+    );
 
-        }});
+    const portfolioURL = URL.createObjectURL(blob);
+
+    window.open(
+        portfolioURL,
+        "_blank"
+    );
 
     </script>
     """
 
     components.html(
-        opener_html,
-        height=90,
+        script,
+        height=1,
         scrolling=False
     )
 
@@ -417,28 +398,46 @@ if st.button(
 
     if resume_file is None:
 
-        st.error("Please upload your resume first.")
+        st.error(
+            "Please upload your resume first."
+        )
+
         st.stop()
+
 
     try:
 
-        with st.spinner("Reading your resume..."):
+        with st.spinner(
+            "Reading your resume..."
+        ):
 
-            resume_text = read_uploaded_resume(resume_file)
+            resume_text = read_uploaded_resume(
+                resume_file
+            )
 
 
-        with st.spinner("🤖 AI is creating your portfolio..."):
+        with st.spinner(
+            "🤖 AI is creating your portfolio..."
+        ):
 
-            portfolio_data = generate_resume_json(resume_text)
+            portfolio_data = generate_resume_json(
+                resume_text
+            )
 
 
         if profile_image is not None:
 
-            with st.spinner("🖼️ Saving profile photo..."):
+            with st.spinner(
+                "🖼️ Saving profile photo..."
+            ):
 
                 image_bytes = profile_image.getvalue()
 
-                with open(PROFILE_FILE, "wb") as file:
+                with open(
+                    PROFILE_FILE,
+                    "wb"
+                ) as file:
+
                     file.write(image_bytes)
 
         else:
@@ -447,29 +446,30 @@ if st.button(
                 PROFILE_FILE.unlink()
 
 
-        with st.spinner("🌐 Building your portfolio..."):
+        with st.spinner(
+            "🌐 Building your portfolio..."
+        ):
 
             generated_file = generate_portfolio(
                 portfolio_data,
-                str(PROFILE_FILE) if profile_image is not None else None
+                str(PROFILE_FILE)
+                if profile_image is not None
+                else None
             )
 
 
-        html_content = prepare_portfolio_html(generated_file)
+        html_content = prepare_portfolio_html(
+            generated_file
+        )
 
 
-        st.success("🎉 Portfolio generated!")
+        st.success(
+            "🎉 Portfolio generated! Redirecting..."
+        )
 
 
-        create_portfolio_opener(html_content)
-
-
-        st.download_button(
-            label="⬇️ Download Portfolio",
-            data=html_content,
-            file_name="portfolio.html",
-            mime="text/html",
-            use_container_width=True
+        redirect_to_portfolio(
+            html_content
         )
 
 
@@ -479,7 +479,9 @@ if st.button(
             "Something went wrong while generating the portfolio."
         )
 
-        st.write(str(error))
+        st.write(
+            str(error)
+        )
 
 
 st.markdown(
