@@ -1,4 +1,5 @@
 import base64
+import json
 import mimetypes
 import re
 from pathlib import Path
@@ -207,13 +208,15 @@ st.markdown(
 )
 
 
-def prepare_portfolio_html(html_file):
-    html_path = Path(html_file).resolve()
+def prepare_portfolio_html(generated_file):
 
-    with open(html_path, "r", encoding="utf-8") as file:
+    generated_path = Path(generated_file).resolve()
+
+    with open(generated_path, "r", encoding="utf-8") as file:
         html_content = file.read()
 
     if STYLE_FILE.exists():
+
         with open(STYLE_FILE, "r", encoding="utf-8") as file:
             css_content = file.read()
 
@@ -224,18 +227,16 @@ def prepare_portfolio_html(html_file):
             flags=re.IGNORECASE
         )
 
-        if "</head>" in html_content.lower():
-            html_content = re.sub(
-                r"</head>",
-                f"<style>\n{css_content}\n</style>\n</head>",
-                html_content,
-                count=1,
-                flags=re.IGNORECASE
-            )
-        else:
-            html_content = f"<style>\n{css_content}\n</style>\n{html_content}"
+        html_content = re.sub(
+            r"</head>",
+            f"<style>\n{css_content}\n</style>\n</head>",
+            html_content,
+            count=1,
+            flags=re.IGNORECASE
+        )
 
     if PROFILE_FILE.exists():
+
         image_bytes = PROFILE_FILE.read_bytes()
         image_base64 = base64.b64encode(image_bytes).decode("utf-8")
 
@@ -261,6 +262,73 @@ def prepare_portfolio_html(html_file):
         )
 
     return html_content
+
+
+def create_portfolio_opener(html_content):
+
+    html_json = json.dumps(html_content)
+
+    opener_html = f"""
+    <div style="
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        width:100%;
+        padding:10px 0;
+    ">
+
+        <button
+            id="openPortfolio"
+            style="
+                width:100%;
+                height:58px;
+                border:none;
+                border-radius:13px;
+                color:white;
+                font-size:17px;
+                font-weight:700;
+                cursor:pointer;
+                background:linear-gradient(
+                    90deg,
+                    #3b82f6,
+                    #8b5cf6,
+                    #ec4899
+                );
+                box-shadow:0 12px 35px rgba(139,92,246,0.35);
+            "
+        >
+            🌐 Open My Portfolio
+        </button>
+
+    </div>
+
+    <script>
+
+    const portfolioHTML = {html_json};
+
+    document
+        .getElementById("openPortfolio")
+        .addEventListener("click", function() {{
+
+            const blob = new Blob(
+                [portfolioHTML],
+                {{ type: "text/html;charset=utf-8" }}
+            );
+
+            const url = URL.createObjectURL(blob);
+
+            window.open(url, "_blank");
+
+        }});
+
+    </script>
+    """
+
+    components.html(
+        opener_html,
+        height=90,
+        scrolling=False
+    )
 
 
 st.markdown(
@@ -300,6 +368,7 @@ with col1:
     )
 
     if resume_file is not None:
+
         st.markdown(
             '<div class="selected-text">✓ Resume selected</div>',
             unsafe_allow_html=True
@@ -326,11 +395,14 @@ with col2:
     )
 
     if profile_image is not None:
+
         st.markdown(
             '<div class="selected-text">✓ Profile photo selected</div>',
             unsafe_allow_html=True
         )
+
     else:
+
         st.markdown(
             '<div class="optional-text">Optional</div>',
             unsafe_allow_html=True
@@ -344,16 +416,21 @@ if st.button(
 ):
 
     if resume_file is None:
+
         st.error("Please upload your resume first.")
         st.stop()
 
     try:
 
         with st.spinner("Reading your resume..."):
+
             resume_text = read_uploaded_resume(resume_file)
 
+
         with st.spinner("🤖 AI is creating your portfolio..."):
+
             portfolio_data = generate_resume_json(resume_text)
+
 
         if profile_image is not None:
 
@@ -369,6 +446,7 @@ if st.button(
             if PROFILE_FILE.exists():
                 PROFILE_FILE.unlink()
 
+
         with st.spinner("🌐 Building your portfolio..."):
 
             generated_file = generate_portfolio(
@@ -376,17 +454,15 @@ if st.button(
                 str(PROFILE_FILE) if profile_image is not None else None
             )
 
-        generated_path = Path(generated_file).resolve()
 
-        html_content = prepare_portfolio_html(generated_path)
+        html_content = prepare_portfolio_html(generated_file)
+
 
         st.success("🎉 Portfolio generated!")
 
-        components.html(
-            html_content,
-            height=1500,
-            scrolling=True
-        )
+
+        create_portfolio_opener(html_content)
+
 
         st.download_button(
             label="⬇️ Download Portfolio",
@@ -395,6 +471,7 @@ if st.button(
             mime="text/html",
             use_container_width=True
         )
+
 
     except Exception as error:
 
