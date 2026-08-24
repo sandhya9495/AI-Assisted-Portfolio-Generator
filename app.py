@@ -1,6 +1,6 @@
 import streamlit as st
-import webbrowser
 from pathlib import Path
+import streamlit.components.v1 as components
 
 from input_handler import read_uploaded_resume
 from gemini import generate_resume_json
@@ -312,12 +312,23 @@ if st.button(
 
         generated_path = Path(generated_file).resolve()
 
-        webbrowser.open_new_tab(
-            generated_path.as_uri()
+        with open(generated_path, "r", encoding="utf-8") as file:
+            html_content = file.read()
+
+        st.success("🎉 Portfolio generated!")
+
+        components.html(
+            html_content,
+            height=1200,
+            scrolling=True
         )
 
-        st.success(
-            "🎉 Portfolio generated! Opening your portfolio..."
+        st.download_button(
+            label="⬇️ Download Portfolio",
+            data=html_content,
+            file_name="portfolio.html",
+            mime="text/html",
+            use_container_width=True
         )
 
     except Exception as error:
