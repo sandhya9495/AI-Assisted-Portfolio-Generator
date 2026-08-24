@@ -11,9 +11,13 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo">{{ name }}</div>
+
+        <div class="logo">
+            {{ name }}
+        </div>
 
         <div class="nav-links">
+
             <a href="#about">About</a>
             <a href="#skills">Skills</a>
             <a href="#education">Education</a>
@@ -31,7 +35,9 @@
             {% endif %}
 
             <a href="#contact">Contact</a>
+
         </div>
+
     </nav>
 
 
@@ -39,17 +45,26 @@
 
         <div class="hero-content">
 
-            <p class="intro">Hello, I'm</p>
+            <p class="intro">
+                Hello, I'm
+            </p>
 
-            <h1>{{ name }}</h1>
+            <h1>
+                {{ name }}
+            </h1>
 
             {% if headline %}
-            <h2>{{ headline }}</h2>
+            <h2>
+                {{ headline }}
+            </h2>
             {% endif %}
 
             {% if summary %}
-            <p class="summary">{{ summary }}</p>
+            <p class="summary">
+                {{ summary }}
+            </p>
             {% endif %}
+
 
             <div class="hero-buttons">
 
@@ -69,29 +84,55 @@
             <div class="hero-social">
 
                 {% if contact.linkedin %}
-                <a href="{{ contact.linkedin }}" target="_blank" title="LinkedIn">
+
+                <a
+                    href="{{ contact.linkedin }}"
+                    target="_blank"
+                    title="LinkedIn">
+
                     <svg viewBox="0 0 24 24">
+
                         <path d="M4.98 3.5C4.98 4.6 4.1 5.5 3 5.5S1 4.6 1 3.5 1.9 1.5 3 1.5s1.98.9 1.98 2zM1.3 8h3.4v11.5H1.3V8zm5.4 0H10v1.6h.05c.5-.9 1.7-1.9 3.5-1.9 3.75 0 4.45 2.45 4.45 5.65v6.15h-3.4v-5.45c0-1.3-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85v5.55H6.7V8z"/>
+
                     </svg>
+
                 </a>
+
                 {% endif %}
 
 
                 {% if contact.github %}
-                <a href="{{ contact.github }}" target="_blank" title="GitHub">
+
+                <a
+                    href="{{ contact.github }}"
+                    target="_blank"
+                    title="GitHub">
+
                     <svg viewBox="0 0 24 24">
+
                         <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.55v-2.1c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.45.11-3.03 0 0 .97-.31 3.17 1.17a11 11 0 0 1 5.77 0c2.2-1.48 3.17-1.17 3.17-1.17.62 1.58.23 2.74.11 3.03.73.8 1.18 1.82 1.18 3.07 0 4.41-2.69 5.38-5.25 5.67.41.35.78 1.04.78 2.1v3.11c0 .3.21.66.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+
                     </svg>
+
                 </a>
+
                 {% endif %}
 
 
                 {% if contact.email %}
-                <a href="mailto:{{ contact.email }}" title="Email">
+
+                <a
+                    href="mailto:{{ contact.email }}"
+                    title="Email">
+
                     <svg viewBox="0 0 24 24">
+
                         <path d="M2 4h20v16H2V4zm10 8 8-5H4l8 5zm0 2L4 9v9h16V9l-8 5z"/>
+
                     </svg>
+
                 </a>
+
                 {% endif %}
 
             </div>
@@ -100,18 +141,19 @@
 
 
         {% if profile_image %}
+
         <div class="hero-image">
 
             <div class="image-container">
 
                 <img
                     src="./profile.jpg"
-                    alt="Profile Photo"
-                >
+                    alt="Profile Photo">
 
             </div>
 
         </div>
+
         {% endif %}
 
     </section>
@@ -122,8 +164,15 @@
         <div class="section-content">
 
             <div class="section-heading">
-                <span>SKILLS</span>
-                <h2>Technologies & Tools</h2>
+
+                <span>
+                    SKILLS
+                </span>
+
+                <h2>
+                    Technologies & Tools
+                </h2>
+
             </div>
 
 
@@ -149,8 +198,15 @@
         <div class="section-content">
 
             <div class="section-heading">
-                <span>EDUCATION</span>
-                <h2>Academic Background</h2>
+
+                <span>
+                    EDUCATION
+                </span>
+
+                <h2>
+                    Academic Background
+                </h2>
+
             </div>
 
 
@@ -168,25 +224,38 @@
                     <div class="education-details">
 
                         {% if item.degree %}
-                        <h3>{{ item.degree }}</h3>
+
+                        <h3>
+                            {{ item.degree }}
+                        </h3>
+
                         {% endif %}
 
+
                         {% if item.institution %}
+
                         <p class="institution">
                             {{ item.institution }}
                         </p>
+
                         {% endif %}
 
+
                         {% if item.year %}
+
                         <p class="year">
                             {{ item.year }}
                         </p>
+
                         {% endif %}
 
+
                         {% if item.grade %}
+
                         <span class="grade">
                             {{ item.grade }}
                         </span>
+
                         {% endif %}
 
                     </div>
@@ -204,13 +273,22 @@
 
     {% if experience %}
 
-    <section class="section experience-section" id="experience">
+    <section
+        class="section experience-section"
+        id="experience">
 
         <div class="section-content">
 
             <div class="section-heading">
-                <span>EXPERIENCE</span>
-                <h2>Professional Experience</h2>
+
+                <span>
+                    EXPERIENCE
+                </span>
+
+                <h2>
+                    Professional Experience
+                </h2>
+
             </div>
 
 
@@ -228,23 +306,38 @@
                     <div class="experience-details">
 
                         {% if item.job_title %}
-                        <h3>{{ item.job_title }}</h3>
+
+                        <h3>
+                            {{ item.job_title }}
+                        </h3>
+
                         {% endif %}
+
 
                         {% if item.company %}
-                        <h4>{{ item.company }}</h4>
+
+                        <h4>
+                            {{ item.company }}
+                        </h4>
+
                         {% endif %}
 
+
                         {% if item.duration %}
+
                         <p class="duration">
                             {{ item.duration }}
                         </p>
+
                         {% endif %}
 
+
                         {% if item.description %}
+
                         <p class="experience-description">
                             {{ item.description }}
                         </p>
+
                         {% endif %}
 
                     </div>
@@ -264,13 +357,22 @@
 
     {% if projects %}
 
-    <section class="section projects-section" id="projects">
+    <section
+        class="section projects-section"
+        id="projects">
 
         <div class="section-content">
 
             <div class="section-heading">
-                <span>PROJECTS</span>
-                <h2>Featured Projects</h2>
+
+                <span>
+                    PROJECTS
+                </span>
+
+                <h2>
+                    Featured Projects
+                </h2>
+
             </div>
 
 
@@ -281,7 +383,9 @@
                     onclick="moveProjects(-1)"
                     class="project-arrow project-arrow-left"
                     aria-label="Previous Project">
+
                     &#8592;
+
                 </button>
 
 
@@ -343,7 +447,9 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="project-github">
+
                                 GitHub →
+
                             </a>
 
                             {% elif project.github_link %}
@@ -353,7 +459,9 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="project-github">
+
                                 GitHub →
+
                             </a>
 
                             {% elif project.link %}
@@ -363,7 +471,9 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="project-github">
+
                                 GitHub →
+
                             </a>
 
                             {% endif %}
@@ -382,7 +492,9 @@
                     onclick="moveProjects(1)"
                     class="project-arrow project-arrow-right"
                     aria-label="Next Project">
+
                     &#8594;
+
                 </button>
 
             </div>
@@ -409,13 +521,22 @@
 
     {% if achievements %}
 
-    <section class="section" id="achievements">
+    <section
+        class="section"
+        id="achievements">
 
         <div class="section-content">
 
             <div class="section-heading">
-                <span>ACHIEVEMENTS</span>
-                <h2>What I've Achieved</h2>
+
+                <span>
+                    ACHIEVEMENTS
+                </span>
+
+                <h2>
+                    What I've Achieved
+                </h2>
+
             </div>
 
 
@@ -433,15 +554,20 @@
                     <div>
 
                         {% if achievement.title %}
+
                         <h3>
                             {{ achievement.title }}
                         </h3>
+
                         {% endif %}
 
+
                         {% if achievement.description %}
+
                         <p>
                             {{ achievement.description }}
                         </p>
+
                         {% endif %}
 
                     </div>
@@ -459,13 +585,22 @@
     {% endif %}
 
 
-    <section class="contact-section" id="contact">
+    <section
+        class="contact-section"
+        id="contact">
 
         <div class="section-content">
 
             <div class="section-heading light-heading">
-                <span>CONTACT</span>
-                <h2>Let's Connect</h2>
+
+                <span>
+                    CONTACT
+                </span>
+
+                <h2>
+                    Let's Connect
+                </h2>
+
             </div>
 
 
@@ -484,7 +619,9 @@
 
                     <div>
 
-                        <span>Email</span>
+                        <span>
+                            Email
+                        </span>
 
                         <strong>
                             {{ contact.email }}
@@ -513,7 +650,9 @@
 
                     <div>
 
-                        <span>Phone</span>
+                        <span>
+                            Phone
+                        </span>
 
                         <strong>
                             {{ contact.phone }}
@@ -543,7 +682,9 @@
 
                     <div>
 
-                        <span>LinkedIn</span>
+                        <span>
+                            LinkedIn
+                        </span>
 
                         <strong>
                             LinkedIn Profile
@@ -573,7 +714,9 @@
 
                     <div>
 
-                        <span>GitHub</span>
+                        <span>
+                            GitHub
+                        </span>
 
                         <strong>
                             GitHub Profile

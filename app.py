@@ -182,6 +182,13 @@ st.markdown(
         margin-top: 8px;
     }
 
+    .optional-text {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
     .security-text {
         text-align: center;
         color: #94a3b8;
@@ -199,6 +206,7 @@ st.markdown(
     '<div class="main-title">AI Portfolio Builder</div>',
     unsafe_allow_html=True
 )
+
 
 st.markdown(
     '<div class="subtitle">'
@@ -261,6 +269,11 @@ with col2:
             '<div class="selected-text">✓ Profile photo selected</div>',
             unsafe_allow_html=True
         )
+    else:
+        st.markdown(
+            '<div class="optional-text">Optional</div>',
+            unsafe_allow_html=True
+        )
 
 
 if st.button(
@@ -273,10 +286,6 @@ if st.button(
         st.error("Please upload your resume first.")
         st.stop()
 
-    if profile_image is None:
-        st.error("Please upload your profile photo.")
-        st.stop()
-
     try:
 
         with st.spinner("Reading your resume..."):
@@ -285,17 +294,20 @@ if st.button(
         with st.spinner("🤖 AI is creating your portfolio..."):
             portfolio_data = generate_resume_json(resume_text)
 
-        with st.spinner("🖼️ Saving profile photo..."):
-            image_bytes = profile_image.getvalue()
+        if profile_image is not None:
 
-            with open(PROFILE_FILE, "wb") as file:
-                file.write(image_bytes)
+            with st.spinner("🖼️ Saving profile photo..."):
+
+                image_bytes = profile_image.getvalue()
+
+                with open(PROFILE_FILE, "wb") as file:
+                    file.write(image_bytes)
 
         with st.spinner("🌐 Building your portfolio..."):
 
             generated_file = generate_portfolio(
                 portfolio_data,
-                str(PROFILE_FILE)
+                str(PROFILE_FILE) if profile_image is not None else None
             )
 
         generated_path = Path(generated_file).resolve()
@@ -304,11 +316,15 @@ if st.button(
             generated_path.as_uri()
         )
 
-        st.success("🎉 Portfolio generated! Opening your portfolio...")
+        st.success(
+            "🎉 Portfolio generated! Opening your portfolio..."
+        )
 
     except Exception as error:
 
-        st.error("Something went wrong while generating the portfolio.")
+        st.error(
+            "Something went wrong while generating the portfolio."
+        )
 
         st.write(str(error))
 
